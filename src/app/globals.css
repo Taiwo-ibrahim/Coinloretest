@@ -2,20 +2,132 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+.table__page {
+  background-color: #eee;
+  padding-top: 20px;
+  padding-bottom: 40px;
+}
+.table__container {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  margin-top: 20px;
+  /* padding-top: 20px; */
+  border: 2px solid #a9a6a6;
+  border-radius: 20px 20px 0 0;
+  justify-content: center;
+  align-items: center;
+  margin-inline: auto;
+}
+.table__container-header {
+  display: flex;
+  align-items: center;
+  margin: 0px auto;
+  /* border: 2px solid black; */
+  justify-content: space-between;
+  border-radius: 20px 20px 0 0;
+  width: 100%;
+  background-color: white;
+}
+.table__container-header > p {
+  max-width: 200px;
+  margin: 20px 0;
+  width: 25%;
+  align-items: center;
+  /* border: 2px solid black; */
+  font-size: 18px;
+  font-weight: bold;
+}
+.table__container-prices {
+  width: 100%;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.table__container-prices_description {
+  display: flex;
+  align-items: center;
+  padding: 0px 5px;
+  margin: 0px auto;
+  /* border: 2px solid black; */
+  justify-content: space-between;
+  width: 100%;
+}
+.table__container-prices_description > p {
+  text-align: left;
+  max-width: 200px;
+  width: 25%;
+  padding: 5px 0;
+  flex-wrap: wrap;
+  /* border: 2px solid black; */
+  font-size: 18px;
+  /* font-weight: bold; */
+}
+.table__container-prices_description:nth-child(even) {
+  background: #FFFFFF;
+}
+.table__container-prices_responsive {
+  display: none;
+}
+.table__container-paginate_btn {
+   display: flex;
+  width: 60%;
+  margin-top: 20px;
+  /* padding-top: 20px; */
+  justify-content: space-between;
+  align-items: center;
+  margin-inline: auto;
+}
+.table__container-paginate_btn > button {
+  font-size: 15px;
+  font-weight: bold;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@media screen and (max-width: 900px) {
+  .table__container {
+   width: 80%; 
   }
+  .table__container-prices,
+  .table__container-header {
+    display: none;
+  }
+  .table__container-prices_responsive {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .table__container-prices_responsive-description {
+    display: flex;
+    max-width: 100%;
+    flex-wrap: wrap;
+    padding: 5px;
+    /* gap:; */
+  }
+  .table__container-prices_responsive-description:nth-child(even) {
+    background-color: #FFFFFF;
+  }
+  .table__item {
+    display: flex;
+    min-width: 50%;
+    flex-direction: column;
+  }
+  .table__item h1 {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .table__container-paginate_btn {
+   display: flex;
+  width: 80%;
+  margin-top: 20px;
+  /* padding-top: 20px; */
+  justify-content: space-between;
+  align-items: center;
+  margin-inline: auto;
+}
+.table__container-paginate_btn button {
+  font-size: 15px;
+  font-weight: bold;
+}
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-}

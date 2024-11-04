@@ -1,101 +1,132 @@
-import Image from "next/image";
+"use client"
+
+import "./globals.css"
+import React, { useEffect, useState } from "react"
+import pagination from 'react-js-pagination'
+import axios from "axios"
+import Load from "@/Components/Load/Load"
+import { Button } from "@/Components/ui/button"
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [coinPrices, setCoinPrices] = useState([])
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10
+  // const [totalPages, setTotalPages] = useState(
+  //   Math.ceil(coinPrices.length / itemsPerPage)
+  // ) 
+
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedData = coinPrices.slice(startIndex, endIndex);
+
+
+  const totalPages = Math.ceil(coinPrices.length / itemsPerPage)
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "https://api.coinlore.net/api/tickers/"
+        )
+        setCoinPrices(response.data.data)
+      } catch (error) {
+        console.error("Error fetching coin prices:", error)
+      }
+    }
+
+    fetchData()
+  }, []);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1)
+    }
+  }
+
+  const handlePrevPage = () => {
+    if(currentPage > 1) {
+      setCurrentPage(currentPage - 1)
+      console.log(currentPage)
+    }
+    // else {
+    //   return (currentPage == 1)
+    // }
+  };
+
+  return (
+    <div className="table__page">
+      <div className="table__container">
+        <div className="table__container-header">
+          <p>💰Coin Name</p>
+          <p>📄code</p>
+          <p>🤑Price</p>
+          <p>📉Total Supply</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <div className="table__container-prices">
+          {coinPrices.length > 0 ? (
+            paginatedData.map((coinPrice) => (
+              <div
+                key={coinPrice.id}
+                className="table__container-prices_description"
+              >
+                <p>{coinPrice.name}</p>
+                <p>{coinPrice.symbol}</p>
+                <p>${coinPrice.price_usd}</p>
+                <p>
+                  {coinPrice.tsupply} {coinPrice.symbol}
+                </p>
+              </div>
+            ))
+          ) : (
+            <Load />
+          )}
+        </div>
+
+        <div className="table__container-prices_responsive">
+          {coinPrices.length > 0 ? (
+            paginatedData.map((coinPrice) => (
+              <div
+                key={coinPrice.id}
+                className="table__container-prices_responsive-description"
+              >
+                <div className="table__item">
+                  <h1>💰Coin</h1>
+                  <p>{coinPrice.name}</p>
+                </div>
+                <div className="table__item">
+                  <h1>📄code</h1>
+                  <p>{coinPrice.symbol}</p>
+                </div>
+                <div className="table__item">
+                  <h1>🤑Price</h1>
+                  <p>${coinPrice.price_usd}</p>
+                </div>
+                <div className="table__item">
+                  <h1>📉Total Supply</h1>
+                  <p>
+                    {coinPrice.tsupply} {coinPrice.symbol}
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <Load />
+          )}
+        </div>
+      </div>
+
+      <div className="table__container-paginate_btn">
+        <Button onClick={handlePrevPage} disabled={currentPage === 1}>
+          ⬅️previous page
+        </Button>
+
+        <Button onClick={handleNextPage} disabled={currentPage === totalPages}>
+          Next page➡️
+        </Button>
+      </div>
     </div>
-  );
+  )
 }
